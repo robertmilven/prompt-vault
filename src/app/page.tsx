@@ -1,7 +1,7 @@
 import Link from "next/link";
 import CategoryRow from "@/components/CategoryRow";
 import {
-  supabase,
+  getSupabase,
   SAMPLE_CATEGORIES,
   SAMPLE_PROMPTS,
   type Category,
@@ -10,6 +10,7 @@ import {
 
 async function getData() {
   // Fetch categories
+  const supabase = getSupabase();
   const { data: dbCategories } = await supabase
     .from("categories")
     .select("*")

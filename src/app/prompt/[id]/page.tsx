@@ -3,13 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import CopyButton from "@/components/CopyButton";
 import PromptCard from "@/components/PromptCard";
-import { supabase, SAMPLE_PROMPTS, type Prompt } from "@/lib/supabase";
+import { getSupabase, SAMPLE_PROMPTS, type Prompt } from "@/lib/supabase";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 async function getPrompt(id: string): Promise<Prompt | null> {
+  const supabase = getSupabase();
   const { data } = await supabase
     .from("prompts")
     .select("*, categories(*)")
@@ -24,6 +25,7 @@ async function getPrompt(id: string): Promise<Prompt | null> {
 }
 
 async function getRelated(categoryId: string, currentId: string): Promise<Prompt[]> {
+  const supabase = getSupabase();
   const { data } = await supabase
     .from("prompts")
     .select("*, categories(*)")
