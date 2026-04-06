@@ -129,6 +129,17 @@ function categorize(folderName, type, promptText, categoryMap) {
 
   // Folder-name heuristics (most reliable)
   const folderLower = folderName.toLowerCase();
+
+  // Prompt Generators - meta-prompts that improve other prompts
+  if (folderLower.includes('prompt generator')) {
+    return categoryMap['Prompt Generators'] || categoryMap['Cinematic'];
+  }
+  // Content King folders + text-only LLM prompts
+  if (folderLower.includes('content king') || folderLower.includes('writing') || folderLower.includes('blogging')
+      || folderLower.includes('seo') || folderLower.includes('e-commerce') || folderLower.includes('newsletter')
+      || folderLower.includes('business') || folderLower.includes('youtube') || folderLower.includes('social media')) {
+    return categoryMap['LLM Prompts'] || categoryMap['Cinematic'];
+  }
   if (folderLower.includes('camera') || folderLower.includes('lens') || folderLower.includes('shot')) {
     return categoryMap['Camera Movements'] || categoryMap['Cinematic'];
   }
