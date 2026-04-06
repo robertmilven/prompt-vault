@@ -27,13 +27,32 @@ async function getPrompt(id: string): Promise<Prompt | null> {
 async function getRelated(categoryId: string, currentId: string): Promise<Prompt[]> {
   try {
     const supabase = getSupabase();
-    const { data } = await supabase
+    // Fetch related prompts with images first
+    const { data: withImages } = await supabase
       .from("prompts")
       .select("*, categories(*)")
       .eq("category_id", categoryId)
       .neq("id", currentId)
+      .not("thumbnail_url", "is", null)
+      .order("created_at", { ascending: false })
       .limit(6);
-    if (data && data.length > 0) return data;
+
+    const imageCount = withImages?.length || 0;
+    let textOnly: Prompt[] = [];
+    if (imageCount < 6) {
+      const { data: extras } = await supabase
+        .from("prompts")
+        .select("*, categories(*)")
+        .eq("category_id", categoryId)
+        .neq("id", currentId)
+        .is("thumbnail_url", null)
+        .order("created_at", { ascending: false })
+        .limit(6 - imageCount);
+      textOnly = extras || [];
+    }
+
+    const results = [...(withImages || []), ...textOnly];
+    if (results.length > 0) return results;
   } catch {}
 
   return SAMPLE_PROMPTS.filter(
