@@ -35,12 +35,29 @@ export default function HomePage() {
         const results: CategoryData[] = [];
 
         for (const cat of categories) {
-          const { data: dbPrompts } = await supabase
+          // Fetch prompts with images first, then fill with text-only
+          const { data: withImages } = await supabase
             .from("prompts")
             .select("*, categories(*)")
             .eq("category_id", cat.id)
+            .not("thumbnail_url", "is", null)
             .order("created_at", { ascending: false })
             .limit(10);
+
+          const imageCount = withImages?.length || 0;
+          let textOnly: Prompt[] = [];
+          if (imageCount < 10) {
+            const { data: extras } = await supabase
+              .from("prompts")
+              .select("*, categories(*)")
+              .eq("category_id", cat.id)
+              .is("thumbnail_url", null)
+              .order("created_at", { ascending: false })
+              .limit(10 - imageCount);
+            textOnly = extras || [];
+          }
+
+          const dbPrompts = [...(withImages || []), ...textOnly];
 
           const prompts =
             dbPrompts && dbPrompts.length > 0

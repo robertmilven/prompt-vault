@@ -63,13 +63,13 @@ export default function BrowsePage() {
         query = query.eq("type", selectedType);
       }
 
-      // Sort
+      // Sort - always show prompts with images first
       if (sort === "newest") {
-        query = query.order("created_at", { ascending: false });
+        query = query.order("thumbnail_url", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false });
       } else if (sort === "most_copied") {
-        query = query.order("copy_count", { ascending: false });
+        query = query.order("thumbnail_url", { ascending: false, nullsFirst: false }).order("copy_count", { ascending: false });
       } else if (sort === "featured") {
-        query = query.order("is_featured", { ascending: false }).order("created_at", { ascending: false });
+        query = query.order("is_featured", { ascending: false }).order("thumbnail_url", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false });
       }
 
       // Pagination
