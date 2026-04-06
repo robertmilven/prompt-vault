@@ -79,3 +79,14 @@ body {
   mask-image: linear-gradient(to right, black 85%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
+
+/* Logo animations */
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotateX(2deg); }
+  50% { transform: translateY(-8px) rotateX(-2deg); }
+}

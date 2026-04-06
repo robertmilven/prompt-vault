@@ -78,13 +78,23 @@ export default function HomePage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#c8ff00]/5 rounded-full blur-[120px]" />
         </div>
 
-        {/* 3D Logo */}
-        <img
-          src="/assets/logo-3d.png"
-          alt="PROMPT VAULT"
-          className="mx-auto mb-6 w-[400px] sm:w-[500px] lg:w-[600px] drop-shadow-[0_0_40px_rgba(200,255,0,0.3)]"
-        />
-        <h1 className="sr-only">PROMPT VAULT</h1>
+        {/* Animated Logo */}
+        <div className="perspective-[800px] mb-6">
+          <h1
+            className="font-[family-name:var(--font-outfit)] text-6xl sm:text-8xl lg:text-9xl font-black tracking-tight animate-logo-float"
+            style={{
+              background: 'linear-gradient(135deg, #c8ff00 0%, #fff 25%, #c8ff00 50%, #ffd700 75%, #c8ff00 100%)',
+              backgroundSize: '200% auto',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'shimmer 4s linear infinite, float 6s ease-in-out infinite',
+              filter: 'drop-shadow(0 0 30px rgba(200,255,0,0.4)) drop-shadow(0 0 60px rgba(200,255,0,0.15))',
+              textShadow: 'none',
+            }}
+          >
+            PROMPT<br />VAULT
+          </h1>
+        </div>
         <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
           30,000+ AI Video Prompts. Copy. Paste. Create.
         </p>
