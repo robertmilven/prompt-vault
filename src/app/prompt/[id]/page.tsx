@@ -10,37 +10,38 @@ interface PageProps {
 }
 
 async function getPrompt(id: string): Promise<Prompt | null> {
-  const supabase = getSupabase();
-  const { data } = await supabase
-    .from("prompts")
-    .select("*, categories(*)")
-    .eq("id", id)
-    .single();
+  try {
+    const supabase = getSupabase();
+    const { data } = await supabase
+      .from("prompts")
+      .select("*, categories(*)")
+      .eq("id", id)
+      .single();
+    if (data) return data;
+  } catch {}
 
-  if (data) return data;
-
-  // Fallback to sample data
   const sample = SAMPLE_PROMPTS.find((p) => p.id === id);
   return sample || null;
 }
 
 async function getRelated(categoryId: string, currentId: string): Promise<Prompt[]> {
-  const supabase = getSupabase();
-  const { data } = await supabase
-    .from("prompts")
-    .select("*, categories(*)")
-    .eq("category_id", categoryId)
-    .neq("id", currentId)
-    .limit(6);
-
-  if (data && data.length > 0) return data;
+  try {
+    const supabase = getSupabase();
+    const { data } = await supabase
+      .from("prompts")
+      .select("*, categories(*)")
+      .eq("category_id", categoryId)
+      .neq("id", currentId)
+      .limit(6);
+    if (data && data.length > 0) return data;
+  } catch {}
 
   return SAMPLE_PROMPTS.filter(
     (p) => p.category_id === categoryId && p.id !== currentId
   ).slice(0, 6);
 }
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 // Gradient placeholders per type
 const gradientMap: Record<string, string> = {
