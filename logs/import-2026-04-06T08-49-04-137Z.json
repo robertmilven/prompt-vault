@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-04-06T08:49:04.136Z",
+  "source": "D:\\airtable folder images with data",
+  "totalRaw": 4391,
+  "transformed": 4255,
+  "skipped": 136,
+  "inserted": 0,
+  "errors": 4255,
+  "categories": {
+    "Cinematic": "d09854a8-2c8b-4fc0-925b-1c41314d5760",
+    "Live-Action": "4f109a0b-bc53-4433-97ea-5f255ff80d3c",
+    "Product": "af0c527d-5a40-4012-91c0-814c2cc4b8a3",
+    "UGC": "1d0cfd4a-68ae-4df7-8d9b-ae6876b9ba6a",
+    "Camera Movements": "d45414fd-23d0-4280-88b1-cddf0bd5ffd5",
+    "Atmospheric": "2e321569-7cd6-459e-8b67-0e21fbeaafee"
+  }
+}
