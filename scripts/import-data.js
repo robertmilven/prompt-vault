@@ -287,18 +287,40 @@ async function main() {
   console.log(`  Found ${categories.length} categories: ${categories.map(c => c.name).join(', ')}`);
   console.log('');
 
-  // 2. Scan all data.json files
-  console.log('[2/4] Scanning data files...');
+  // 2. Fetch existing source_record_ids to avoid duplicates
+  console.log('[2/5] Checking existing records in Supabase...');
+  const existingIds = new Set();
+  let offset = 0;
+  while (true) {
+    const { data: batch, error: fetchErr } = await supabase
+      .from('prompts')
+      .select('source_record_id')
+      .range(offset, offset + 999);
+    if (fetchErr || !batch || batch.length === 0) break;
+    for (const r of batch) existingIds.add(r.source_record_id);
+    offset += batch.length;
+    if (batch.length < 1000) break;
+  }
+  console.log(`  Found ${existingIds.size} existing records - will skip duplicates`);
+  console.log('');
+
+  // 3. Scan all data.json files
+  console.log('[3/5] Scanning data files...');
   const allRecords = scanDataFiles();
   console.log(`  Total raw records: ${allRecords.length}`);
   console.log('');
 
-  // 3. Transform records
-  console.log('[3/4] Transforming records...');
+  // 4. Transform records (skip duplicates)
+  console.log('[4/5] Transforming records...');
   const rows = [];
   let skipped = 0;
+  let duplicates = 0;
 
   for (const record of allRecords) {
+    if (existingIds.has(record.id)) {
+      duplicates++;
+      continue;
+    }
     const row = transformRecord(record, categoryMap);
     if (row) {
       rows.push(row);
@@ -308,10 +330,16 @@ async function main() {
   }
   console.log(`  Ready to import: ${rows.length}`);
   console.log(`  Skipped (no/short prompt): ${skipped}`);
+  console.log(`  Skipped (duplicate): ${duplicates}`);
   console.log('');
 
-  // 4. Batch insert
-  console.log('[4/4] Inserting into Supabase...');
+  if (rows.length === 0) {
+    console.log('No new records to import!');
+    return;
+  }
+
+  // 5. Batch insert
+  console.log('[5/5] Inserting into Supabase...');
   const { inserted, errors } = await batchInsert(rows);
   console.log('');
 
