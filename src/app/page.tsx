@@ -78,9 +78,13 @@ export default function HomePage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#c8ff00]/5 rounded-full blur-[120px]" />
         </div>
 
-        <h1 className="font-[family-name:var(--font-outfit)] text-5xl sm:text-7xl font-bold tracking-tight gradient-text mb-6">
-          PROMPT VAULT
-        </h1>
+        {/* 3D Logo */}
+        <img
+          src="/assets/logo-3d.png"
+          alt="PROMPT VAULT"
+          className="mx-auto mb-6 w-[400px] sm:w-[500px] lg:w-[600px] drop-shadow-[0_0_40px_rgba(200,255,0,0.3)]"
+        />
+        <h1 className="sr-only">PROMPT VAULT</h1>
         <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
           30,000+ AI Video Prompts. Copy. Paste. Create.
         </p>
