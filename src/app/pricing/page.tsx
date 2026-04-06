@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
 export default function PricingPage() {
   const { user, isPaid } = useAuth();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4">
@@ -85,13 +87,32 @@ export default function PricingPage() {
               </div>
             ) : (
               <button
-                className="w-full py-2.5 text-center text-sm text-black font-bold bg-[#c8ff00] rounded-xl hover:bg-[#d4ff33] transition-colors shadow-[0_0_20px_rgba(200,255,0,0.2)]"
-                onClick={() => {
-                  // Stripe checkout will go here
-                  alert("Stripe checkout coming soon - payments are being set up.");
+                className="w-full py-2.5 text-center text-sm text-black font-bold bg-[#c8ff00] rounded-xl hover:bg-[#d4ff33] transition-colors shadow-[0_0_20px_rgba(200,255,0,0.2)] disabled:opacity-50"
+                disabled={checkoutLoading}
+                onClick={async () => {
+                  if (!user) {
+                    window.location.href = "/signup";
+                    return;
+                  }
+                  setCheckoutLoading(true);
+                  try {
+                    const res = await fetch("/api/checkout", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ userId: user.id, email: user.email }),
+                    });
+                    const data = await res.json();
+                    if (data.url) {
+                      window.location.href = data.url;
+                    }
+                  } catch {
+                    alert("Something went wrong. Please try again.");
+                  } finally {
+                    setCheckoutLoading(false);
+                  }
                 }}
               >
-                Upgrade to Pro
+                {checkoutLoading ? "Loading..." : user ? "Upgrade to Pro" : "Sign Up to Upgrade"}
               </button>
             )}
           </div>
