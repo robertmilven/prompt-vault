@@ -7,15 +7,13 @@ let _supabase: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient {
   if (!_supabase) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || SUPABASE_ANON_KEY;
-    _supabase = createClient(url, key);
+    _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
   return _supabase;
 }
 
-// Backward compat
-export const supabase = typeof window !== 'undefined' ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null as unknown as SupabaseClient;
+// Backward compat - works on both client and server
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Types based on the database schema
 export interface Category {
