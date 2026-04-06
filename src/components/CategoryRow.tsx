@@ -4,6 +4,15 @@ import { useRef, useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
 import type { Prompt } from "@/lib/supabase";
 
+const CATEGORY_ICONS: Record<string, string> = {
+  'Cinematic': '/assets/icons/cinematic.png',
+  'Live-Action': '/assets/icons/live-action.png',
+  'Product': '/assets/icons/product.png',
+  'UGC': '/assets/icons/ugc.png',
+  'Camera Movements': '/assets/icons/camera-movements.png',
+  'Atmospheric': '/assets/icons/atmospheric.png',
+};
+
 interface CategoryRowProps {
   title: string;
   prompts: Prompt[];
@@ -44,7 +53,10 @@ export default function CategoryRow({ title, prompts }: CategoryRowProps) {
 
   return (
     <section className="mb-10">
-      <h2 className="font-[family-name:var(--font-outfit)] text-xl font-semibold text-white mb-4 px-4 sm:px-6 lg:px-8">
+      <h2 className="font-[family-name:var(--font-outfit)] text-xl font-semibold text-white mb-4 px-4 sm:px-6 lg:px-8 flex items-center gap-3">
+        {CATEGORY_ICONS[title] && (
+          <img src={CATEGORY_ICONS[title]} alt="" className="w-8 h-8 object-contain drop-shadow-[0_0_8px_rgba(200,255,0,0.4)]" />
+        )}
         {title}
       </h2>
       <div className="relative group/row">
