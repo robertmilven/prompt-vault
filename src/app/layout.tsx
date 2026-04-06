@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -16,7 +17,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Prompt Vault - AI Video Prompt Library",
   description:
-    "30,000+ premium AI video prompts. Copy, paste, and create stunning AI-generated videos instantly.",
+    "6,000+ premium AI video prompts. Copy, paste, and create stunning AI-generated videos instantly.",
 };
 
 export default function RootLayout({
@@ -30,8 +31,10 @@ export default function RootLayout({
       className={`${inter.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white">
-        <Navbar />
-        <main className="flex-1">{children}</main>
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );
