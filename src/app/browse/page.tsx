@@ -12,7 +12,7 @@ import {
 
 const PAGE_SIZE = 18;
 
-type SortOption = "newest" | "most_copied" | "featured";
+type SortOption = "newest" | "images_first" | "a_z";
 
 export default function BrowsePage() {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
@@ -63,13 +63,13 @@ export default function BrowsePage() {
         query = query.eq("type", selectedType);
       }
 
-      // Sort - always show prompts with images first
+      // Sort
       if (sort === "newest") {
+        query = query.order("created_at", { ascending: false });
+      } else if (sort === "images_first") {
         query = query.order("thumbnail_url", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false });
-      } else if (sort === "most_copied") {
-        query = query.order("thumbnail_url", { ascending: false, nullsFirst: false }).order("copy_count", { ascending: false });
-      } else if (sort === "featured") {
-        query = query.order("is_featured", { ascending: false }).order("thumbnail_url", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false });
+      } else if (sort === "a_z") {
+        query = query.order("title", { ascending: true });
       }
 
       // Pagination
@@ -94,8 +94,8 @@ export default function BrowsePage() {
           if (selectedType && p.type !== selectedType) return false;
           return true;
         });
-        if (sort === "most_copied") results.sort((a, b) => b.copy_count - a.copy_count);
-        if (sort === "featured") results.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
+        if (sort === "images_first") results.sort((a, b) => (b.thumbnail_url ? 1 : 0) - (a.thumbnail_url ? 1 : 0));
+        if (sort === "a_z") results.sort((a, b) => a.title.localeCompare(b.title));
       } else {
         results = [];
       }
@@ -175,8 +175,8 @@ export default function BrowsePage() {
             className="px-4 py-3 bg-[#141414] border border-[#1e1e1e] rounded-xl text-white focus:outline-none focus:border-[#c8ff00]/50 appearance-none cursor-pointer"
           >
             <option value="newest">Newest</option>
-            <option value="most_copied">Most Copied</option>
-            <option value="featured">Featured</option>
+            <option value="images_first">Images First</option>
+            <option value="a_z">A - Z</option>
           </select>
 
           <button
